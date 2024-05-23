@@ -1,6 +1,6 @@
 import './styles/App.scss';
 
-function App() {
+const App = () => {
   return (
     <main className='calculator'>
 
