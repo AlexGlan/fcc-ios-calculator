@@ -1,1 +1,23 @@
 @use './' as *;
+
+body {
+    background-color: $clr-dark-gray;
+    font-family: $font-primary;
+}
+
+#root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.calculator {
+    height: 80vh;
+    max-height: 40rem;
+    width: 20rem;
+    margin: 2.5rem 0;
+    background-color: $clr-dark;    
+    border: .1rem solid $clr-light;
+    border-radius: 2.7rem;
+}
