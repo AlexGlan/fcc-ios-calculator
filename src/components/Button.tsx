@@ -28,7 +28,7 @@ const Button = (props: ButtonProps): JSX.Element => {
                         width: '100%',
                         paddingLeft: '1.5rem',
                         textAlign: 'left'
-                    }
+                      }
                     : {}
             }
             className={
