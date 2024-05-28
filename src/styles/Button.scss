@@ -1,0 +1,39 @@
+@use './' as *;
+
+.btn {
+    cursor: pointer;
+    height: 4rem;
+    width: 4rem;
+    color: $clr-dark;
+    border: none;
+    padding: 1rem;
+    font-family: inherit; 
+    font-size: 1.8rem;
+    border-radius: 2rem;
+    transition: opacity 0.1s ease;   
+}
+
+.btn:hover {
+    opacity: .8;    
+}
+
+.btn:active {
+    opacity: .4;
+}
+
+.regular {
+    background-color: $clr-dark-gray;
+    color: $clr-light;
+}
+
+.actions {
+    background-color: $clr-light-gray;
+    padding: .5rem;
+}
+
+.fun {
+    background-color: $clr-accent;
+    color: $clr-light;
+    padding: .5rem;
+    font-size: 2.3rem;
+}
