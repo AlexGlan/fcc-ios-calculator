@@ -1,7 +1,7 @@
 import './styles/App.scss';
 import Button from './components/Button';
 
-function App() {
+const App = () => {
     return (
         <main className='calculator'>
             <div className='calculator__buttons'>
@@ -31,7 +31,7 @@ function App() {
                 <Button btnText='=' btnFunction={() => {}} btnId='equals' btnType='fun'/>
             </div>
         </main>
-  )
+    )
 }
 
 export default App
