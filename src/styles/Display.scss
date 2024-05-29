@@ -1,0 +1,17 @@
+@use './' as *;
+
+.output {
+    color: $clr-light;
+    text-align: right;
+    width: 80%;
+    margin: auto 0 1rem 0;
+
+    #display {
+        font-size: 4.4rem;
+        font-weight: 200;
+    }
+    
+    .formula {
+        font-size: 1.2rem;
+    }
+}
