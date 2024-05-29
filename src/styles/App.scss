@@ -13,11 +13,22 @@ body {
 }
 
 .calculator {
-    height: 80vh;
-    max-height: 40rem;
+    //height: 80vh;
+    height: 40rem;
     width: 20rem;
     margin: 2.5rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: $clr-dark;    
     border: .1rem solid $clr-light;
     border-radius: 2.7rem;
+    padding: 2.5rem 0;
+
+    .calculator__buttons {
+        align-self: flex-end; // temp
+        display: grid;
+        gap: .7rem;
+        grid-template-columns: repeat(4, 1fr);
+    }
 }
