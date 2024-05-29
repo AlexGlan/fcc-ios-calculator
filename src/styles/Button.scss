@@ -1,0 +1,47 @@
+@use './' as *;
+
+@mixin btn-effects($className, $color) {
+    .#{$className}:hover,
+    .#{$className}:focus-visible {
+        background-color: rgba($color, 0.7);
+    }
+
+    .#{$className}:active {
+        background-color: rgba($color, 0.3);
+    }
+}
+
+.btn {
+    cursor: pointer;
+    height: 3.8rem;
+    width: 3.8rem;
+    color: $clr-dark;
+    border: none;
+    padding: .8rem;
+    font-family: inherit; 
+    font-size: 1.8rem;
+    border-radius: 2rem;  
+}
+
+.regular {
+    background-color: $clr-dark-gray;
+    color: $clr-light;
+}
+
+@include btn-effects('regular', $clr-dark-gray);
+
+.actions {
+    background-color: $clr-light-gray;
+    padding: .5rem;
+}
+
+@include btn-effects('actions', $clr-light-gray);
+
+.fun {
+    background-color: $clr-accent;
+    color: $clr-light;
+    padding: .5rem;
+    font-size: 2.3rem;
+}
+
+@include btn-effects('fun', $clr-accent);
