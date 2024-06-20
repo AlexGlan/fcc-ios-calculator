@@ -8,7 +8,61 @@ const App = () => {
     const [formula, setFormula] = useState('');
     const [lastOperation, setLastOperation] = useState('');
 
-    const calculateResult = (): void => { }
+    const calculateResult = (): void => {
+        const formulaArr: string[] = formula.split(' ');
+        
+        // Format 'substract' and 'add' symbols
+        for (let i = 0; i < formulaArr.length; i++) {
+            if (formulaArr[i] === '' || formulaArr[i] === '+') {
+                formulaArr.splice(i, 1);
+            }
+
+            const currentValue: string = formulaArr[i].replace('−', '-');
+            const nextValue: string = i !== formulaArr.length - 1
+                ? formulaArr[i + 1].replace('−', '-')
+                : ''
+
+            if (currentValue === '-') {
+                formulaArr.splice(i, 2, currentValue + nextValue);
+            } else {
+                formulaArr[i] = currentValue;
+                if (i !== formulaArr.length - 1) {
+                    formulaArr[i + 1] = nextValue;
+                }
+            }
+        }
+                
+        // Case if last entry was an operator
+        if (
+            /[\+\-×÷]/.test(formulaArr[formulaArr.length - 1]) &&
+            formulaArr[formulaArr.length - 1].length === 1
+        ) {                        
+            formulaArr.pop();
+        }
+
+        // Handle order of operations
+        for (let i = 0; i < formulaArr.length; i++) {                   
+            if (/[×÷]/.test(formulaArr[i])) { 
+                const a: number = parseFloat(formulaArr[i - 1]);
+                const b: number = parseFloat(formulaArr[i + 1]);
+         
+                const res: number = formulaArr[i] === '×'
+                    ? a * b
+                    : a / b
+                formulaArr.splice(i - 1, 3, res.toString());
+                i--;
+            }           
+        }
+    
+        // Calculate the end result
+        const res: string = formulaArr
+            .map(Number)
+            .reduce((acc, curr) => acc + curr, 0)
+            .toString();
+                 
+        setResult(res);
+        setLastOperation('=');
+    }
 
     const handleOperator = (textContent: string): void => {
         if (lastOperation === textContent) {
