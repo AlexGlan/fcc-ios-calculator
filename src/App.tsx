@@ -6,12 +6,69 @@ import './styles/App.scss';
 const App = () => {
     const [result, setResult] = useState('0');
     const [formula, setFormula] = useState('');
+    const [lastOperation, setLastOperation] = useState('');
 
     const calculateResult = (): void => { }
 
-    const handleOperator = (textContent: string): void => { }
+    const handleOperator = (textContent: string): void => {
+        if (lastOperation === textContent) {
+            return;
+        }
+        
+        if (lastOperation === '=') {
+            setFormula(`${result} ${textContent} `);
+            setResult(textContent);            
+            setLastOperation(textContent);
+            return;
+        }
 
-    const handleNumber = (textContent: string): void => { }
+        if (!/[0-9]/.test(lastOperation)) {            
+            const formulaElems: string[] = formula.split(' ');
+            
+            if (textContent !== '−') {
+                for (let i = formulaElems.length - 1; i >= 0; i--) {
+                    if (/[0-9]/.test(formulaElems[i])) {
+                        formulaElems.splice(i + 1);
+                        break;
+                    }
+                }
+            }
+
+            setFormula(prevValue => {
+                return prevValue.length === 0
+                    ? `${result} ${textContent} `
+                    : formulaElems.join(' ') + ` ${textContent} `
+            });            
+           
+        } else {
+            setFormula(prevValue => {
+                return prevValue.length === 0
+                    ? `${result} ${textContent} ` 
+                    : prevValue += ` ${textContent} `
+            });
+        }
+
+        setResult(textContent);
+        setLastOperation(textContent);
+    }
+
+    const handleNumber = (textContent: string): void => {
+        if (result === '0') {
+            setResult(textContent);
+        } else {
+            setResult(prevResult => (prevResult += textContent).replace(/[+−×÷]/, ''));
+        }
+
+        if (lastOperation === '=') {
+            setResult(textContent);
+            setFormula(textContent);
+            setLastOperation(textContent);
+            return;
+        }
+
+        setFormula(prevValue => prevValue += textContent);
+        setLastOperation(textContent);
+    }
 
     const handleClick = (id: string, textContent: string): void => {
         switch (id) {
