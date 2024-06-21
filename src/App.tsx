@@ -16,13 +16,9 @@ const App = () => {
 
     const calculateResult = (): void => {
         const formulaArr: string[] = formula.split(' ');
-        
+                
         // Format 'subtract' and 'add' symbols
-        for (let i = 0; i < formulaArr.length; i++) {
-            if (formulaArr[i] === '' || formulaArr[i] === ADD_SYMBOL) {
-                formulaArr.splice(i, 1);
-            }
-
+        for (let i = 0; i < formulaArr.length; i++) {            
             const currentValue: string = formulaArr[i].replace(SUBTRACT_SYMBOL, '-');
             const nextValue: string = i !== formulaArr.length - 1
                 ? formulaArr[i + 1].replace(SUBTRACT_SYMBOL, '-')
@@ -30,20 +26,22 @@ const App = () => {
 
             if (currentValue === '-') {
                 formulaArr.splice(i, 2, currentValue + nextValue);
-            } else {
-                formulaArr[i] = currentValue;
-                if (i !== formulaArr.length - 1) {
-                    formulaArr[i + 1] = nextValue;
-                }
+            } else if (currentValue === '' || currentValue === ADD_SYMBOL) {
+                formulaArr.splice(i, 1);
+                i--;
             }
         }
         
-        // Case if last entry was an operator
+        // Check if last entry was an operator and remove it
         if (
-            OPERATORS.includes(formulaArr[formulaArr.length - 1]) &&
-            formulaArr[formulaArr.length - 1].length === 1
-        ) {                        
+            OPERATORS.includes(formulaArr[formulaArr.length - 1]) ||
+            formulaArr[formulaArr.length - 1] === '-'        
+        ) {
             formulaArr.pop();
+            // Input allows up to 2 operator entries at once, so check one more time:
+            if (OPERATORS.includes(formulaArr[formulaArr.length - 1])) {
+                formulaArr.pop();
+            }
         }
 
         // Handle order of operations
