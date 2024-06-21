@@ -3,6 +3,12 @@ import Button from './components/Button';
 import Display from './components/Display';
 import './styles/App.scss';
 
+const ADD_SYMBOL: string = '+';
+const SUBTRACT_SYMBOL: string = '−';
+const MULTIPLY_SYMBOL: string = '×';
+const DIVIDE_SYMBOL: string = '÷';
+const OPERATORS: string[] = [ADD_SYMBOL, SUBTRACT_SYMBOL, MULTIPLY_SYMBOL, DIVIDE_SYMBOL];
+
 const App = () => {
     const [result, setResult] = useState('0');
     const [formula, setFormula] = useState('');
@@ -11,15 +17,15 @@ const App = () => {
     const calculateResult = (): void => {
         const formulaArr: string[] = formula.split(' ');
         
-        // Format 'substract' and 'add' symbols
+        // Format 'subtract' and 'add' symbols
         for (let i = 0; i < formulaArr.length; i++) {
-            if (formulaArr[i] === '' || formulaArr[i] === '+') {
+            if (formulaArr[i] === '' || formulaArr[i] === ADD_SYMBOL) {
                 formulaArr.splice(i, 1);
             }
 
-            const currentValue: string = formulaArr[i].replace('−', '-');
+            const currentValue: string = formulaArr[i].replace(SUBTRACT_SYMBOL, '-');
             const nextValue: string = i !== formulaArr.length - 1
-                ? formulaArr[i + 1].replace('−', '-')
+                ? formulaArr[i + 1].replace(SUBTRACT_SYMBOL, '-')
                 : ''
 
             if (currentValue === '-') {
@@ -31,22 +37,25 @@ const App = () => {
                 }
             }
         }
-                
+        
         // Case if last entry was an operator
         if (
-            /[\+\-×÷]/.test(formulaArr[formulaArr.length - 1]) &&
+            OPERATORS.includes(formulaArr[formulaArr.length - 1]) &&
             formulaArr[formulaArr.length - 1].length === 1
         ) {                        
             formulaArr.pop();
         }
 
         // Handle order of operations
-        for (let i = 0; i < formulaArr.length; i++) {                   
-            if (/[×÷]/.test(formulaArr[i])) { 
+        for (let i = 0; i < formulaArr.length; i++) {                
+            if (
+                formulaArr[i] === MULTIPLY_SYMBOL ||
+                formulaArr[i] === DIVIDE_SYMBOL
+            ) { 
                 const a: number = parseFloat(formulaArr[i - 1]);
                 const b: number = parseFloat(formulaArr[i + 1]);
          
-                const res: number = formulaArr[i] === '×'
+                const res: number = formulaArr[i] === MULTIPLY_SYMBOL
                     ? a * b
                     : a / b
                 formulaArr.splice(i - 1, 3, res.toString());
@@ -79,7 +88,7 @@ const App = () => {
         if (!/[0-9]/.test(lastOperation)) {            
             const formulaElems: string[] = formula.split(' ');
             
-            if (textContent !== '−') {
+            if (textContent !== SUBTRACT_SYMBOL) {
                 for (let i = formulaElems.length - 1; i >= 0; i--) {
                     if (/[0-9]/.test(formulaElems[i])) {
                         formulaElems.splice(i + 1);
@@ -110,7 +119,8 @@ const App = () => {
         if (result === '0') {
             setResult(textContent);
         } else {
-            setResult(prevResult => (prevResult += textContent).replace(/[+−×÷]/, ''));
+            const operators: RegExp = new RegExp(`[${OPERATORS.join('')}]`);
+            setResult(prevResult => (prevResult += textContent).replace(operators, ''));
         }
 
         if (lastOperation === '=') {
@@ -176,22 +186,22 @@ const App = () => {
                 <Button btnText='AC' btnFunction={handleClick} btnId='clear' btnType='actions'/>
                 <Button btnText='+/-' btnFunction={handleClick} btnId='negate' btnType='actions'/>
                 <Button btnText='%' btnFunction={handleClick} btnId='percent' btnType='actions'/>
-                <Button btnText='÷' btnFunction={handleClick} btnId='divide' btnType='fun'/>
+                <Button btnText={DIVIDE_SYMBOL} btnFunction={handleClick} btnId='divide' btnType='fun'/>
                 {/* 2nd row */}
                 <Button btnText='7' btnFunction={handleClick} btnId='seven' />
                 <Button btnText='8' btnFunction={handleClick} btnId='eight' />
                 <Button btnText='9' btnFunction={handleClick} btnId='nine' />
-                <Button btnText='×' btnFunction={handleClick} btnId='multiply' btnType='fun'/>
+                <Button btnText={MULTIPLY_SYMBOL} btnFunction={handleClick} btnId='multiply' btnType='fun'/>
                 {/* 3rd row */}
                 <Button btnText='4' btnFunction={handleClick} btnId='four' />
                 <Button btnText='5' btnFunction={handleClick} btnId='five' />
                 <Button btnText='6' btnFunction={handleClick} btnId='six' />
-                <Button btnText='−' btnFunction={handleClick} btnId='subtract' btnType='fun'/>
+                <Button btnText={SUBTRACT_SYMBOL} btnFunction={handleClick} btnId='subtract' btnType='fun'/>
                 {/* 4th row */}
                 <Button btnText='1' btnFunction={handleClick} btnId='one' />
                 <Button btnText='2' btnFunction={handleClick} btnId='two' />
                 <Button btnText='3' btnFunction={handleClick} btnId='three' />
-                <Button btnText='+' btnFunction={handleClick} btnId='add' btnType='fun'/>
+                <Button btnText={ADD_SYMBOL} btnFunction={handleClick} btnId='add' btnType='fun'/>
                 {/* 5th row */}
                 <Button btnText='0' btnFunction={handleClick} btnId='zero' style='pill'/>
                 <Button btnText='.' btnFunction={handleClick} btnId='decimal' />
