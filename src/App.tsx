@@ -13,22 +13,25 @@ const App = () => {
     const [result, setResult] = useState('0');
     const [formula, setFormula] = useState('');
     const [lastOperation, setLastOperation] = useState('');
+    const [isValueNegated, negateValue] = useState(false);
 
     const calculateResult = (): void => {
-        const formulaArr: string[] = formula.split(' ');
+        const formulaArr: string[] = formula.split(' ');      
                 
         // Format 'subtract' and 'add' symbols
         for (let i = 0; i < formulaArr.length; i++) {            
-            const currentValue: string = formulaArr[i].replace(SUBTRACT_SYMBOL, '-');
+            const currentValue: string = formulaArr[i].replace(SUBTRACT_SYMBOL, '-');            
             const nextValue: string = i !== formulaArr.length - 1
                 ? formulaArr[i + 1].replace(SUBTRACT_SYMBOL, '-')
                 : ''
 
-            if (currentValue === '-') {
+            if (currentValue === '-') {                
                 formulaArr.splice(i, 2, currentValue + nextValue);
             } else if (currentValue === '' || currentValue === ADD_SYMBOL) {
                 formulaArr.splice(i, 1);
                 i--;
+            } else {
+                formulaArr[i] = currentValue;
             }
         }
         
@@ -66,7 +69,7 @@ const App = () => {
             .map(Number)
             .reduce((acc, curr) => acc + curr, 0)
             .toString();
-                 
+            
         setResult(res);
         setLastOperation('=');
     }
@@ -113,11 +116,13 @@ const App = () => {
         setLastOperation(textContent);
     }
 
-    const handleNumber = (textContent: string): void => {
+    const handleNumber = (textContent: string): void => {        
         if (result === '0') {
             setResult(textContent);
         } else {
-            const operators: RegExp = new RegExp(`[${OPERATORS.join('')}]`);
+            const operators: RegExp = isValueNegated
+                ? new RegExp(`[${ADD_SYMBOL}${MULTIPLY_SYMBOL}${DIVIDE_SYMBOL}]`)
+                : new RegExp(`[${OPERATORS.join('')}]`)
             setResult(prevResult => (prevResult += textContent).replace(operators, ''));
         }
 
@@ -130,6 +135,47 @@ const App = () => {
 
         setFormula(prevValue => prevValue += textContent);
         setLastOperation(textContent);
+    }
+
+    const handleNegate = (): void => {
+        if (
+            result === '0' || (/[^0-9]/.test(result) &&
+            result.length === 1)
+        ) {
+            return;
+        }
+
+        negateValue(prevValue => !prevValue);
+        setResult(prevResult => 
+            prevResult.includes(SUBTRACT_SYMBOL) || prevResult.includes('-')
+                ? prevResult.slice(1)
+                : SUBTRACT_SYMBOL + prevResult
+        );
+
+        if (lastOperation === '=') {
+            setFormula('');
+            return;
+        }
+
+        setFormula(prevFormula => {
+            const formulaValues: string[] = prevFormula.split(' ');            
+            const lastValue: string | undefined = formulaValues.pop();
+            
+            if (lastValue !== undefined) {
+                const negatedVal: string = lastValue.includes(SUBTRACT_SYMBOL)
+                    ? lastValue.slice(1)
+                    : SUBTRACT_SYMBOL + lastValue
+                
+                if (formulaValues[formulaValues.length - 1] === SUBTRACT_SYMBOL) {
+                    formulaValues.pop();
+                    negatedVal.slice(1);
+                }
+
+                formulaValues.push(negatedVal);
+            }     
+
+            return formulaValues.join(' ');
+        });
     }
 
     const handleClick = (id: string, textContent: string): void => {
@@ -147,11 +193,12 @@ const App = () => {
                 handleNumber(textContent);
                 break;
             case 'clear':
+                negateValue(prevValue =>  prevValue === true ? false : prevValue);
                 setResult('0');
                 setFormula('');
                 break;
             case 'negate':
-
+                handleNegate();
                 break;
             case 'percent':
 
@@ -160,6 +207,7 @@ const App = () => {
             case 'multiply':
             case 'subtract':
             case 'add':
+                negateValue(prevValue => prevValue === true ? false : prevValue);
                 handleOperator(textContent);
                 break;            
             case 'decimal':
@@ -171,6 +219,7 @@ const App = () => {
                 }
                 break;            
             case 'equals':
+                negateValue(prevValue =>  prevValue === true ? false : prevValue);
                 calculateResult();
                 break;
         }
