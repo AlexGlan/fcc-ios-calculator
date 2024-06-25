@@ -18,7 +18,7 @@ const App = () => {
     const calculateResult = (): void => {
         const formulaArr: string[] = formula.split(' ');      
                 
-        // Format 'subtract' and 'add' symbols
+        // Format Subtraction and Addition symbols
         for (let i = 0; i < formulaArr.length; i++) {            
             const currentValue: string = formulaArr[i].replace(SUBTRACT_SYMBOL, '-');            
             const nextValue: string = i !== formulaArr.length - 1
