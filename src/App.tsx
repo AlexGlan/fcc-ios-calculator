@@ -175,7 +175,22 @@ const App = () => {
                 }
 
                 formulaValues.push(negatedVal);
-            }     
+
+                const length: number = formulaValues.length;
+                if (
+                    formulaValues[length - 2] &&
+                    /[0-9]/.test(formulaValues[length - 2]) &&
+                    !formulaValues[length - 1].includes(SUBTRACT_SYMBOL)                    
+                ) {                    
+                    formulaValues.splice(length - 1, 0, ADD_SYMBOL);
+                } else if (
+                    formulaValues[length - 2] &&
+                    formulaValues[length - 2] === ADD_SYMBOL &&
+                    formulaValues[length - 1].includes(SUBTRACT_SYMBOL)                  
+                ) {
+                    formulaValues.splice(length - 2, 1);
+                }
+            }
 
             return formulaValues.join(' ');
         });
