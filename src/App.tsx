@@ -12,12 +12,13 @@ const OPERATORS: string[] = [ADD_SYMBOL, SUBTRACT_SYMBOL, MULTIPLY_SYMBOL, DIVID
 const App = () => {
     const [result, setResult] = useState('0');
     const [formula, setFormula] = useState('');
-    const [lastOperation, setLastOperation] = useState('');
+    const [percent, setPercent] = useState('');
+    const [lastOperation, setLastOperation] = useState('');    
     const [isValueNegated, negateValue] = useState(false);
 
-    const calculateResult = (): void => {
-        const formulaArr: string[] = formula.split(' ');      
-                
+    const calculateResult = (f: string): string => {
+        const formulaArr: string[] = f.split(' ');
+        
         // Format Subtraction and Addition symbols
         for (let i = 0; i < formulaArr.length; i++) {            
             const currentValue: string = formulaArr[i].replace(SUBTRACT_SYMBOL, '-');            
@@ -27,6 +28,11 @@ const App = () => {
 
             if (currentValue === '-') {                
                 formulaArr.splice(i, 2, currentValue + nextValue);
+            } else if (currentValue === '%') {              
+                formulaArr[i] = formulaArr[i - 1].includes('-')
+                    ? '-' + percent
+                    : percent
+                formulaArr.splice(i - 1, 1);
             } else if (currentValue === '' || currentValue === ADD_SYMBOL) {
                 formulaArr.splice(i, 1);
                 i--;
@@ -65,13 +71,10 @@ const App = () => {
         }
     
         // Calculate the end result
-        const res: string = formulaArr
+        return formulaArr
             .map(Number)
             .reduce((acc, curr) => acc + curr, 0)
             .toString();
-            
-        setResult(res);
-        setLastOperation('=');
     }
 
     const handleOperator = (textContent: string): void => {
@@ -178,6 +181,41 @@ const App = () => {
         });
     }
 
+    const handlePercentageKey = (textContent: string): void => {
+        if (textContent === lastOperation || /[^0-9]/.test(lastOperation)) {
+            return;
+        }
+
+        let percentVal: number = 0;
+        const formulaArr: string[] = formula.split(' ');
+
+        if (formulaArr.length <= 1) {
+            setResult('0');
+            setFormula('');
+            return;
+        }
+
+        for (let i = formulaArr.length - 1; i >= 0; i--) {
+            if (i === formulaArr.length - 1) {
+                percentVal = parseFloat(formulaArr[i].replace(SUBTRACT_SYMBOL, ''));
+                continue;
+            }
+
+            if (!OPERATORS.includes(formulaArr[i])) {
+                formulaArr.splice(i + 1);
+                break;
+            }
+        }
+        
+        const num: number = parseFloat(calculateResult(formulaArr.join(' ')));
+        const res: string = (num * percentVal / 100).toString();
+        
+        setResult(res);
+        setPercent(res);
+        setFormula(prevFormula => prevFormula + ' ' + textContent);        
+        setLastOperation(textContent);
+    }
+
     const handleClick = (id: string, textContent: string): void => {
         switch (id) {
             case 'one':
@@ -201,7 +239,8 @@ const App = () => {
                 handleNegate();
                 break;
             case 'percent':
-
+                negateValue(prevValue => prevValue === true ? false : prevValue);
+                handlePercentageKey(textContent);
                 break;
             case 'divide':
             case 'multiply':
@@ -220,7 +259,8 @@ const App = () => {
                 break;            
             case 'equals':
                 negateValue(prevValue =>  prevValue === true ? false : prevValue);
-                calculateResult();
+                setResult(calculateResult(formula));
+                setLastOperation('=');
                 break;
         }
     }
