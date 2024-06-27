@@ -4,7 +4,7 @@ type ButtonProps = {
     btnText: string,
     btnId: string,
     btnType?: string,
-    btnFunction: () => void,
+    btnFunction: (id: string, textContent: string) => void,
     style?: string
 }
 
@@ -20,7 +20,7 @@ const Button = (props: ButtonProps): JSX.Element => {
     return (
         <button
             id={btnId}
-            onClick={btnFunction}
+            onClick={() => { btnFunction(btnId, btnText); }}
             style={
                 style === 'pill'
                     ? {

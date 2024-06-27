@@ -13,11 +13,11 @@ body {
 }
 
 .calculator {
-    //height: 80vh;
     height: 40rem;
     width: 20rem;
     margin: 2.5rem 0;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: $clr-dark;    
@@ -26,9 +26,18 @@ body {
     padding: 2.5rem 0;
 
     .calculator__buttons {
-        align-self: flex-end; // temp
         display: grid;
         gap: .7rem;
         grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 310px) {
+    .calculator {
+        width: 100%;
+
+        .calculator__buttons {
+            gap: .3rem;
+        }
     }
 }

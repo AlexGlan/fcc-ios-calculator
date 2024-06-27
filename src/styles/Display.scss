@@ -1,0 +1,20 @@
+@use './' as *;
+
+.output {
+    color: $clr-light;
+    text-align: right;
+    width: 80%;
+    margin: auto 0 1rem 0;
+    overflow: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: $clr-dark-gray $clr-dark;
+    white-space: nowrap;
+
+    #display {
+        font-weight: 200;
+    }
+    
+    .formula {
+        font-size: 1.2rem;
+    }
+}
