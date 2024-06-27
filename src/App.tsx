@@ -14,7 +14,7 @@ const App = () => {
     const [formula, setFormula] = useState('');
     const [percent, setPercent] = useState('');
     const [lastOperation, setLastOperation] = useState('');    
-    const [isValueNegated, negateValue] = useState(false);
+    const [isValueNegated, setNegateStatus] = useState(false);
 
     const calculateResult = (f: string): string => {
         const formulaArr: string[] = f.split(' ');
@@ -148,7 +148,7 @@ const App = () => {
             return;
         }
 
-        negateValue(prevValue => !prevValue);
+        setNegateStatus(prevValue => !prevValue);
         setResult(prevResult => 
             prevResult.includes(SUBTRACT_SYMBOL) || prevResult.includes('-')
                 ? prevResult.slice(1)
@@ -246,7 +246,7 @@ const App = () => {
                 handleNumber(textContent);
                 break;
             case 'clear':
-                negateValue(prevValue =>  prevValue === true ? false : prevValue);
+                setNegateStatus(prevValue => prevValue === true ? false : prevValue);
                 setResult('0');
                 setFormula('');
                 break;
@@ -254,14 +254,14 @@ const App = () => {
                 handleNegate();
                 break;
             case 'percent':
-                negateValue(prevValue => prevValue === true ? false : prevValue);
+                setNegateStatus(prevValue => prevValue === true ? false : prevValue);
                 handlePercentageKey(textContent);
                 break;
             case 'divide':
             case 'multiply':
             case 'subtract':
             case 'add':
-                negateValue(prevValue => prevValue === true ? false : prevValue);
+                setNegateStatus(prevValue => prevValue === true ? false : prevValue);
                 handleOperator(textContent);
                 break;            
             case 'decimal':
@@ -273,7 +273,7 @@ const App = () => {
                 }
                 break;            
             case 'equals':
-                negateValue(prevValue =>  prevValue === true ? false : prevValue);
+                setNegateStatus(prevValue =>  prevValue === true ? false : prevValue);
                 setResult(calculateResult(formula));
                 setLastOperation('=');
                 break;
