@@ -13,7 +13,6 @@ body {
 }
 
 .calculator {
-    //height: 80vh;
     height: 40rem;
     width: 20rem;
     margin: 2.5rem 0;
@@ -30,5 +29,15 @@ body {
         display: grid;
         gap: .7rem;
         grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 310px) {
+    .calculator {
+        width: 100%;
+
+        .calculator__buttons {
+            gap: .3rem;
+        }
     }
 }
